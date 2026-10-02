@@ -1,0 +1,41 @@
+{
+  "id": "FEAT-007",
+  "type": "feat",
+  "description": "Final integration, Docker Compose wiring, end-to-end demo scenario verification, and merge-ready finalization. Depends on all previous FEATs (001-006). This FEAT does NOT add new features — it verifies cross-FEAT seams, fixes integration issues, runs all 7 demo scenarios, creates the smoke-test script, and ensures the full build is clean.",
+  "status": "pending",
+  "steps": [
+    "Verify docker-compose.yml is correct: postgres service has healthcheck (pg_isready), backend depends_on postgres with condition service_healthy, frontend depends_on backend. All env vars passed from .env file via env_file: .env directive. Volumes: postgres-data named volume, backend uploads/ bind-mounted so files persist across restarts.",
+    "Create campus-x/.env with actual values for local development: DATABASE_URL=postgresql://campusx:campusx123@localhost:5432/campusx, JWT_SECRET=campus-x-jwt-secret-dev-2026, JWT_REFRESH_SECRET=campus-x-refresh-secret-dev-2026, PORT=3001, FRONTEND_URL=http://localhost:5173, ML_SERVICE_URL=http://localhost:8001, OPENAI_API_KEY= (empty). NOTE: .env is gitignored, only .env.example is committed.",
+    "Create campus-x/frontend/.env with VITE_API_URL=http://localhost:3001/api. Create campus-x/frontend/.env.example with same key and placeholder value.",
+    "Verify all 7 demo scenarios manually with curl commands (record actual outputs in FEAT findings): (1) GET /api/availability/rooms?period=3&capacity=45 → verify returns only rooms cap>=45 not in period 3 timetable. (2) POST /api/reservations for CSE-204 period 3 then same GET → verify CSE-204 absent. (3) GET /api/availability/class?class_id=<CSE5A-id>&period=3 → FREE or OCCUPIED. (4) GET /api/resources?subject_code=CD → returns seeded question papers. (5) POST /api/ai/query {query:'Where is the ladies restroom near CSE block?'} → returns room from DB. (6) POST /api/complaints with valid body → creates complaint with CMP-2026-NNN id. (7) GET /api/analytics/overview AND GET /api/analytics/alerts → counts and alert objects.",
+    "Create campus-x/docs/smoke-test.sh (bash): set of curl commands covering all 7 demo scenarios plus auth flow. Each curl prints pass/fail based on HTTP status code. Make it executable.",
+    "Run `cd campus-x/backend && npm run build` — must exit 0.",
+    "Run `cd campus-x/frontend && npm run build` — must exit 0.",
+    "Verify ml-service starts: `cd campus-x/ml-service && uvicorn main:app --port 8001` and GET /health returns 200.",
+    "Check for and fix any cross-FEAT integration issues: (a) Frontend Axios client baseURL matches backend PORT. (b) CORS origin in backend matches frontend URL. (c) File upload paths match static serve path. (d) TanStack Query keys consistent (no duplicate keys causing stale data). (e) React Router paths match Sidebar nav hrefs. (f) Token refresh loop works — test by expiring a short-lived token manually.",
+    "Create campus-x/.gitignore: node_modules/, dist/, .env, uploads/*, *.log, __pycache__/, .pytest_cache/, campus-x/.agents/. Create campus-x/backend/.gitignore and campus-x/frontend/.gitignore similarly.",
+    "Final TypeScript strict-mode audit: run `cd campus-x/backend && npx tsc --noEmit` and `cd campus-x/frontend && npx tsc --noEmit` with zero errors. Fix any remaining type errors.",
+    "Create campus-x/README.md (root): one-page quick-start guide with prerequisites (Node 18+, Python 3.11+, PostgreSQL 15), clone + install + seed + start commands, link to docs/README.md for full documentation."
+  ],
+  "acceptance_criteria": [
+    "`cd campus-x/backend && npm run build` exits 0",
+    "`cd campus-x/frontend && npm run build` exits 0",
+    "`cd campus-x/backend && npx tsc --noEmit` exits 0",
+    "`cd campus-x/frontend && npx tsc --noEmit` exits 0",
+    "All 7 demo scenarios pass: correct HTTP status + correct response shape for each",
+    "Demo scenario 2 verified: after reservation, the reserved room does NOT appear in availability search for that period",
+    "Demo scenario 5 verified: AI copilot returns actual room location from DB, not a hallucinated response",
+    "docker-compose up -d starts all services without errors (postgres, backend, frontend, ml-service all healthy)",
+    ".gitignore correctly excludes node_modules, dist, .env, uploads/, __pycache__",
+    "docs/smoke-test.sh exists and is executable"
+  ],
+  "verification": [
+    "cd 'c:\\Users\\poorv\\OneDrive\\Desktop\\Projects!!\\Major Project\\campus-x\\backend' && npm run build && npx tsc --noEmit",
+    "cd 'c:\\Users\\poorv\\OneDrive\\Desktop\\Projects!!\\Major Project\\campus-x\\frontend' && npm run build && npx tsc --noEmit",
+    "cd 'c:\\Users\\poorv\\OneDrive\\Desktop\\Projects!!\\Major Project\\campus-x' && docker-compose up -d (all services start)",
+    "Run all 7 demo scenario curls from plan.md and confirm expected responses",
+    "bash campus-x/docs/smoke-test.sh (all lines print PASS)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

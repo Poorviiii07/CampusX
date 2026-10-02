@@ -1,0 +1,41 @@
+{
+  "id": "FEAT-005",
+  "type": "feat",
+  "description": "Faculty pages, Student pages, and shared Find Available Classroom page. Depends on FEAT-003 (core frontend) and FEAT-002 (backend APIs). Independent of FEAT-004 (admin pages) and FEAT-006 (AI copilot). All pages use TanStack Query, react-hook-form + zod, and the shared UI library.",
+  "status": "pending",
+  "steps": [
+    "Create campus-x/frontend/src/pages/shared/FindClassroomPage.tsx (accessible to ALL roles including guest): top filter bar with fields: Date (date picker), Period (1-8 select), Required Capacity (number input), Room Type (select with RoomType options), Building (select loading from /api/buildings), Equipment (multi-checkbox for common equipment like Projector, Smart Board, AC, Computer Lab). 'Find Available Now' quick button that fills Date=today and Period=currentPeriod. On submit: GET /api/availability/rooms with query params. Results: grid of RoomCard components. Each RoomCard shows room code, building/floor, capacity badge, type badge, equipment tags, status=AVAILABLE badge, a Reserve button (faculty+admin only, disabled for student/guest). Empty state if no rooms match. Loading skeleton during fetch.",
+    "Create campus-x/frontend/src/components/rooms/RoomCard.tsx: card component showing room details for the availability results. Props: room data, showReserveButton bool. Reserve button opens ReservationModal.",
+    "Create campus-x/frontend/src/components/rooms/ReservationModal.tsx: modal with form fields: Date, Period Start (select 1-8), Period End (select, must be >= period start), Reason (text required), Class (optional select of classes — filtered by user's department for faculty), Type (SINGLE/MULTI_PERIOD/FULL_DAY). On submit: POST /api/reservations. Show conflict error if 409 returned. Success toast + close modal + refetch results.",
+    "Create campus-x/frontend/src/pages/shared/TimetablePage.tsx: shows timetable for the logged-in user. For FACULTY: fetches GET /api/timetable/entries?facultyId=me, renders week grid Mon-Sat × 8 periods. Today's day column highlighted in accent color. Each filled cell shows subject code, room code, class name. Empty cells shown as 'Free'. Print button. For STUDENT: fetches entries for student's class. For ADMIN: dropdown to select any class, then renders that class's timetable.",
+    "Create campus-x/frontend/src/pages/faculty/UploadResourcePage.tsx: full upload form with all required metadata fields per spec: Title, Subject (select loading from /api/timetable/subjects?departmentId=me), Subject Code (auto-filled from subject selection), Semester (1-8 number), Academic Year (text, e.g. 2025-26), Exam Type (ExamType enum select), Department (pre-filled from faculty profile), Regulation/Scheme (text), File (FileInput, accept pdf/doc/docx/ppt/pptx/zip/png/jpg, max 50MB shows file name + size), Description (optional textarea), Is Public (toggle, default true). Submit via POST /api/resources/upload as multipart/form-data. Progress indicator during upload. Success shows uploaded resource card with download link.",
+    "Create campus-x/frontend/src/pages/faculty/MyUploadsPage.tsx: table of faculty's uploaded resources (GET /api/resources/my). Columns: title, subject, semester, exam type, academic year, approval status badge (PENDING/APPROVED/REJECTED), download count, upload date, delete button. Filter by subject/semester/exam type.",
+    "Create campus-x/frontend/src/pages/faculty/MyReservationsPage.tsx: table of faculty's room reservations (GET /api/reservations/my). Columns: room code, date, periods, reason, class, status badge (ACTIVE/CANCELLED/EXPIRED), cancel button (only for ACTIVE future reservations). Reserve New Room button navigates to /find-classroom.",
+    "Create campus-x/frontend/src/pages/faculty/ReportIssuePage.tsx (also usable by student): complaint filing form: Building (select), Floor (select, filtered by building), Room (select, filtered by floor), Category (ComplaintCategory select with icons), Description (textarea, min 20 chars), Priority (LOW/MEDIUM/HIGH select), Image Upload (optional, FileInput accept image/*, max 5MB). Submit POST /api/complaints. Auto-generated complaint ID shown in success toast. Redirect to complaints list.",
+    "Create campus-x/frontend/src/pages/shared/ComplaintsPage.tsx: role-aware complaint list. FACULTY: own department complaints. STUDENT: own complaints. Admin shows all (handled in FEAT-004). Each row: autoId, category icon, location (building/room), description truncated, priority badge, status badge, date. Clicking row → complaint detail modal with: full description, image, updates timeline (ComplaintUpdate[]), current status. For student: can only view own complaints. File New Complaint button.",
+    "Create campus-x/frontend/src/pages/student/ResourceSearchPage.tsx: search interface for students. Filter bar: Department (select), Subject (select, filtered by dept), Semester (1-8), Academic Year (text), Exam Type (select). Search button → GET /api/resources with filters (only isApproved=true returned for students). Results as resource cards: title, subject, exam type badge, academic year, upload date, download count, Download button. Download button: GET /api/resources/:id/download → triggers file download via redirect or Blob. Students cannot upload here (Upload button not shown).",
+    "Create campus-x/frontend/src/pages/student/MyTimetablePage.tsx: same as TimetablePage but pre-filtered to student's class (from student profile). Show free periods labeled 'Free Period'. Show today's schedule highlighted. Compact mobile view.",
+    "Create campus-x/frontend/src/pages/guest/GuestHomePage.tsx: landing page for guest users. Hero card with CAMPUS-X branding. Quick action cards: View Campus Map, Find Available Classroom, Campus Chatbot. Restriction banner: 'Create an account to access academic resources and advanced features.'",
+    "Run `cd campus-x/frontend && npm run build` — exits 0."
+  ],
+  "acceptance_criteria": [
+    "`cd campus-x/frontend && npm run build` exits 0",
+    "Logged in as faculty: /faculty/upload renders full metadata form with all required fields",
+    "Faculty can submit upload form with a test PDF and see success toast",
+    "Logged in as student: /student/resources renders resource search with filter bar",
+    "Student can search for resources by subject_code=CD and see results",
+    "Logged in as student: /complaints renders own complaints list (not other students' complaints)",
+    "Find Available Classroom page works for all roles: filters apply and results return rooms with capacity >= requested",
+    "Reservation modal: selecting period_start > period_end shows validation error",
+    "Logged in as guest: /find-classroom works; Reserve button not visible",
+    "Logged in as faculty: /faculty/reservations shows My Reservations table with Cancel button on ACTIVE reservations"
+  ],
+  "verification": [
+    "cd 'c:\\Users\\poorv\\OneDrive\\Desktop\\Projects!!\\Major Project\\campus-x\\frontend' && npm run build",
+    "npm run dev, login as faculty, navigate /faculty/upload, fill all fields, submit",
+    "npm run dev, login as student, navigate /student/resources, search subject_code=CD",
+    "npm run dev, login as guest, navigate /find-classroom, check Reserve button is absent"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

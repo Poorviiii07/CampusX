@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: campusx-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: campusx
+      POSTGRES_USER: campusx
+      POSTGRES_PASSWORD: campusx123
+    ports:
+      - '5432:5432'
+    volumes:
+      - campusx_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U campusx -d campusx']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: campusx-backend
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    environment:
+      - DATABASE_URL=postgresql://campusx:campusx123@postgres:5432/campusx
+      - JWT_SECRET=campus_x_jwt_secret_2025
+      - JWT_REFRESH_SECRET=campus_x_refresh_secret_2025
+      - PORT=3001
+      - FRONTEND_URL=http://localhost:5173
+      - ML_SERVICE_URL=http://ml-service:8001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  frontend:
+    build: ./frontend
+    container_name: campusx-frontend
+    restart: unless-stopped
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+
+  ml-service:
+    build: ./ml-service
+    container_name: campusx-ml
+    restart: unless-stopped
+    ports:
+      - '8001:8001'
+
+volumes:
+  campusx_postgres_data:
+    driver: local

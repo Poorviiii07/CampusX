@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-006",
+  "type": "feat",
+  "description": "AI Campus Copilot chat interface, global UI polish (loading skeletons everywhere, toast notifications, empty states, error boundaries, 404 page, deep blue+teal theme finalization), and documentation. Depends on FEAT-003 (core frontend), FEAT-002 (AI backend endpoint). Independent of FEAT-004 and FEAT-005 in terms of files, but the polish step touches all pages — so this runs after those are stable.",
+  "status": "pending",
+  "steps": [
+    "Create campus-x/frontend/src/pages/AICopilotPage.tsx: full-page chat interface. Layout: left sidebar showing conversation history (each session title = first message truncated to 40 chars). Main area: top = chat message list, bottom = input bar. Message bubbles: user messages right-aligned (accent background), bot messages left-aligned (white card with subtle shadow). Each bot message shows: text response + optional inline cards (for LOCATION_SEARCH → RoomDetailMiniCard, AVAILABILITY_SEARCH → AvailabilityResultMiniCard, RESOURCE_SEARCH → ResourceMiniCard). Typing indicator: animated 3-dot bounce while waiting for response. Send button + Enter key to submit. On empty state (no messages): show 6 suggestion chips: 'Where is the ladies restroom?', 'Find available classrooms now', 'CSE Sem 5 timetable', 'Download DBMS question papers', 'Show my complaints', 'Where is CSE-204?'. Clicking chip fills input and auto-submits. Accessible: role=log aria-live=polite on message list.",
+    "Create campus-x/frontend/src/components/chat/MessageBubble.tsx: renders user or bot message. Bot message: avatar (robot icon, accent color), text, optional cards rendered below text. User message: text only, user avatar initial.",
+    "Create campus-x/frontend/src/components/chat/InlineCards.tsx: renders different mini-card types based on response intent: RoomMiniCard (code, building, floor, status badge, type badge, capacity), ResourceMiniCard (title, subject, exam type, download count, Download button), ComplaintMiniCard (autoId, status, category, date). Each mini-card is compact (max 280px wide).",
+    "Create campus-x/frontend/src/components/chat/SuggestionChips.tsx: horizontal scrollable row of chip buttons. On click: fires the suggestion as a query.",
+    "Polish campus-x/frontend/src/index.css and Tailwind theme: finalize deep blue (primary-900=#1E3A5F as sidebar bg, primary-800 as topbar, primary-50 as page background) + teal accent (accent-500=#14B8A6 for primary actions, accent-400 for hover). Apply consistent spacing: all cards use p-6 rounded-xl shadow-sm border border-gray-100. All tables use divide-y divide-gray-100. All form inputs use consistent ring-accent-500 focus ring.",
+    "Audit all data-fetching pages from FEAT-004 and FEAT-005: add Skeleton loading states where missing. Pattern: while isLoading→ render SkeletonCard×N; while isError→ render EmptyState with error icon and retry button; while data?.length===0→ render EmptyState with context-appropriate message and action button. Pages to audit: FindClassroomPage, TimetablePage, ResourceSearchPage, ComplaintsPage, AnalyticsDashboard, BuildingManagement, RoomManagement, TimetableManagement, ComplaintManagement, MyUploadsPage, MyReservationsPage.",
+    "Wrap all page-level components with ErrorBoundary from shared UI library. Add to router: errorElement prop on each route pointing to an inline error boundary fallback that shows 'Something went wrong' + Reload button.",
+    "Add Toast context to campus-x/frontend/src/main.tsx (ToastProvider wrapping app). Audit all form submissions and mutations from FEAT-004 and FEAT-005: every POST/PATCH/DELETE must call useToast().success() on 2xx or useToast().error() on error. Toast appears bottom-right, stacks up to 5, auto-dismisses after 4s, has X close button.",
+    "Create campus-x/frontend/src/pages/NotFoundPage.tsx (update from FEAT-003 stub): styled 404 page with campus illustration (use Lucide Building2 icon large), '404 — Page Not Found' heading, 'The page you're looking for doesn't exist or has been moved.' text, Go Home button.",
+    "Create campus-x/frontend/src/pages/UnauthorizedPage.tsx (update from FEAT-003 stub): styled 403 page with ShieldX icon, 'Access Restricted' heading, 'You don't have permission to view this page.' text, role-appropriate Go Back link.",
+    "Create campus-x/docs/README.md: project overview, tech stack, setup instructions (prerequisites, .env config, Docker Compose start, seed command), role-based access summary, demo credentials table, all 7 demo scenario curl commands, architecture diagram (ASCII).",
+    "Create campus-x/docs/API.md: all API endpoints listed with method, path, auth required, role restrictions, request body shape, response shape. One section per route group.",
+    "Run `cd campus-x/frontend && npm run build` — exits 0, no TS errors, no Tailwind warnings."
+  ],
+  "acceptance_criteria": [
+    "`cd campus-x/frontend && npm run build` exits 0",
+    "Logged in as any role: /ai-copilot renders chat interface with 6 suggestion chips on empty state",
+    "Typing 'Where is the ladies restroom near CSE block?' and sending returns a bot response with room location data (not hallucinated)",
+    "Typing 'Find available classrooms now' returns a list of available rooms as mini-cards",
+    "All pages show skeleton loading placeholders during data fetch (not blank white screens)",
+    "All form submissions show success toast on success and error toast on API error",
+    "404 page shows at /this-route-does-not-exist",
+    "403 page shows when a student tries to access /admin/analytics",
+    "Primary color is deep blue throughout sidebar/topbar; accent teal on buttons and active nav items",
+    "docs/README.md exists with setup instructions and demo credentials"
+  ],
+  "verification": [
+    "cd 'c:\\Users\\poorv\\OneDrive\\Desktop\\Projects!!\\Major Project\\campus-x\\frontend' && npm run build",
+    "npm run dev, navigate /ai-copilot, send suggestion chip 'Where is the ladies restroom?', confirm bot response with room data",
+    "npm run dev, navigate /this-does-not-exist, confirm 404 page renders"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

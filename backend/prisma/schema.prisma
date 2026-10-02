@@ -1,0 +1,434 @@
+// CAMPUS-X Prisma Schema
+// All models for the Smart Campus Management System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  FACULTY
+  STUDENT
+  GUEST
+}
+
+enum RoomType {
+  CLASSROOM
+  LAB
+  FACULTY_CABIN
+  OFFICE
+  RESTROOM
+  STAFF_ROOM
+  SEMINAR_HALL
+  AUDITORIUM
+  LIBRARY
+  OTHER
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+  RESERVED
+  TEMP_UNAVAILABLE
+}
+
+enum DayOfWeek {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+}
+
+enum SemesterType {
+  ODD
+  EVEN
+}
+
+enum ExamType {
+  END_SEM
+  INTERNAL
+  ASSIGNMENT
+  LAB_MANUAL
+  NOTES
+  OTHER
+}
+
+enum ResourceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ComplaintCategory {
+  EQUIPMENT
+  PROJECTOR
+  COMPUTER
+  AC
+  FAN_LIGHT
+  WATER
+  RESTROOM
+  NETWORK
+  CLASSROOM_DAMAGE
+  ELECTRICAL
+  OTHER
+}
+
+enum ComplaintStatus {
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum ComplaintPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ReservationType {
+  SINGLE
+  MULTI_PERIOD
+  FULL_DAY
+  RECURRING
+}
+
+enum ReservationStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+// ─────────────────────────────────────────────
+// MODELS
+// ─────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(STUDENT)
+  phone     String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  departments         Department[]       @relation("HodRelation")
+  uploadedResources   Resource[]         @relation("ResourceUploader")
+  reportedComplaints  Complaint[]        @relation("ComplaintReporter")
+  assignedComplaints  Complaint[]        @relation("ComplaintAssignee")
+  complaintUpdates    ComplaintUpdate[]
+  timetableEntries    TimetableEntry[]   @relation("FacultyTimetable")
+  roomReservations    RoomReservation[]  @relation("ReservationMaker")
+  auditLogs           AuditLog[]
+
+  @@map("users")
+}
+
+model Building {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  totalFloors Int      @default(1)
+  description String?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  floors        Floor[]
+  rooms         Room[]
+  complaints    Complaint[]
+  energyRecords EnergyRecord[]
+
+  @@map("buildings")
+}
+
+model Floor {
+  id           String   @id @default(uuid())
+  floorNumber  Int
+  name         String
+  blueprintUrl String?
+  buildingId   String
+  createdAt    DateTime @default(now())
+
+  // Relations
+  building      Building       @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  rooms         Room[]
+  complaints    Complaint[]
+  energyRecords EnergyRecord[]
+
+  @@unique([buildingId, floorNumber])
+  @@map("floors")
+}
+
+model Room {
+  id              String     @id @default(uuid())
+  code            String     @unique
+  name            String
+  type            RoomType
+  status          RoomStatus @default(AVAILABLE)
+  capacity        Int        @default(0)
+  floor           Int
+  floorId         String
+  buildingId      String
+  department      String?
+  equipment       String     @default("[]") // JSON array stored as string
+  accessibility   String?
+  description     String?
+  coordinatesX    Float?
+  coordinatesY    Float?
+  isActive        Boolean    @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relations
+  floorRelation    Floor            @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  building         Building         @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  timetableEntries TimetableEntry[]
+  reservations     RoomReservation[]
+  complaints       Complaint[]
+  energyRecords    EnergyRecord[]
+
+  @@map("rooms")
+}
+
+model Department {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  hodId     String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  hod      User?     @relation("HodRelation", fields: [hodId], references: [id], onDelete: SetNull)
+  subjects Subject[]
+  classes  Class[]
+
+  @@map("departments")
+}
+
+model Subject {
+  id           String   @id @default(uuid())
+  code         String   @unique
+  name         String
+  credits      Int      @default(3)
+  departmentId String
+  semester     Int
+  createdAt    DateTime @default(now())
+
+  // Relations
+  department       Department       @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  timetableEntries TimetableEntry[]
+  resources        Resource[]
+
+  @@map("subjects")
+}
+
+model Semester {
+  id           String       @id @default(uuid())
+  type         SemesterType
+  academicYear String
+  startDate    DateTime
+  endDate      DateTime
+  isActive     Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+
+  // Relations
+  classes          Class[]
+  timetableEntries TimetableEntry[]
+
+  @@map("semesters")
+}
+
+model Class {
+  id             String   @id @default(uuid())
+  name           String
+  departmentId   String
+  semesterId     String
+  semesterNumber Int
+  section        String
+  strength       Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  // Relations
+  department       Department       @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  semester         Semester         @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+  timetableEntries TimetableEntry[]
+  reservations     RoomReservation[]
+
+  @@unique([departmentId, semesterId, semesterNumber, section])
+  @@map("classes")
+}
+
+model TimetableEntry {
+  id        String    @id @default(uuid())
+  classId   String
+  subjectId String
+  facultyId String
+  roomId    String
+  semesterId String
+  day       DayOfWeek
+  period    Int
+  startTime String
+  endTime   String
+  createdAt DateTime  @default(now())
+
+  // Relations
+  class     Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject   Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  faculty   User      @relation("FacultyTimetable", fields: [facultyId], references: [id], onDelete: Cascade)
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  semester  Semester  @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, semesterId, day, period])
+  @@unique([facultyId, semesterId, day, period])
+  @@unique([classId, semesterId, day, period])
+  @@map("timetable_entries")
+}
+
+model RoomReservation {
+  id           String            @id @default(uuid())
+  roomId       String
+  reservedById String
+  classId      String?
+  reason       String
+  date         DateTime
+  periodStart  Int
+  periodEnd    Int
+  type         ReservationType   @default(SINGLE)
+  status       ReservationStatus @default(ACTIVE)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  // Relations
+  room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  reservedBy User     @relation("ReservationMaker", fields: [reservedById], references: [id], onDelete: Cascade)
+  class      Class?   @relation(fields: [classId], references: [id], onDelete: SetNull)
+
+  @@map("room_reservations")
+}
+
+model Resource {
+  id            String      @id @default(uuid())
+  title         String
+  description   String?
+  subjectId     String?
+  departmentId  String
+  semester      Int
+  academicYear  String
+  examType      ExamType    @default(OTHER)
+  regulation    String?
+  uploadedById  String
+  fileUrl       String
+  fileName      String
+  fileSize      Int         @default(0)
+  fileType      String
+  isApproved    Boolean     @default(false)
+  isPublic      Boolean     @default(true)
+  downloadCount Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  subject    Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  uploadedBy User     @relation("ResourceUploader", fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@map("resources")
+}
+
+model Complaint {
+  id          String            @id @default(uuid())
+  autoId      String            @unique
+  reporterId  String
+  category    ComplaintCategory
+  buildingId  String?
+  floorId     String?
+  roomId      String?
+  description String
+  imageUrl    String?
+  priority    ComplaintPriority @default(MEDIUM)
+  status      ComplaintStatus   @default(OPEN)
+  assignedToId String?
+  resolution  String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Relations
+  reporter   User              @relation("ComplaintReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  assignedTo User?             @relation("ComplaintAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  building   Building?         @relation(fields: [buildingId], references: [id], onDelete: SetNull)
+  floor      Floor?            @relation(fields: [floorId], references: [id], onDelete: SetNull)
+  room       Room?             @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  updates    ComplaintUpdate[]
+
+  @@map("complaints")
+}
+
+model ComplaintUpdate {
+  id           String          @id @default(uuid())
+  complaintId  String
+  updatedById  String
+  message      String
+  statusChange ComplaintStatus?
+  createdAt    DateTime        @default(now())
+
+  // Relations
+  complaint Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  updatedBy User      @relation(fields: [updatedById], references: [id], onDelete: Cascade)
+
+  @@map("complaint_updates")
+}
+
+model EnergyRecord {
+  id              String   @id @default(uuid())
+  buildingId      String
+  floorId         String?
+  roomId          String?
+  date            DateTime
+  hour            Int
+  consumptionKwh  Float
+  meterId         String?
+  isAnomaly       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  // Relations
+  building Building  @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  floor    Floor?    @relation(fields: [floorId], references: [id], onDelete: SetNull)
+  room     Room?     @relation(fields: [roomId], references: [id], onDelete: SetNull)
+
+  @@map("energy_records")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
