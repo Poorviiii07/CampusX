@@ -12,6 +12,19 @@ const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'));
 const PlaceholderPage = lazy(() => import('@/pages/PlaceholderPage'));
 
+const CampusMap = lazy(() => import('@/pages/CampusMap'));
+const AnalyticsDashboard = lazy(() => import('@/pages/admin/AnalyticsDashboard'));
+const BuildingManagement = lazy(() => import('@/pages/admin/BuildingManagement'));
+const FloorBlueprintUpload = lazy(() => import('@/pages/admin/FloorBlueprintUpload'));
+const RoomManagement = lazy(() => import('@/pages/admin/RoomManagement'));
+const TimetableManagement = lazy(() => import('@/pages/admin/TimetableManagement'));
+const ComplaintManagement = lazy(() => import('@/pages/admin/ComplaintManagement'));
+const OptimizationPage = lazy(() => import('@/pages/admin/OptimizationPage'));
+const SimulationPage = lazy(() => import('@/pages/admin/SimulationPage'));
+const EnergyDashboard = lazy(() => import('@/pages/admin/EnergyDashboard'));
+const MLForecasts = lazy(() => import('@/pages/admin/MLForecasts'));
+const ReportsPage = lazy(() => import('@/pages/admin/ReportsPage'));
+
 function Loading() {
   return (
     <div className="flex h-full items-center justify-center py-20">
@@ -81,7 +94,7 @@ const routes: RouteObject[] = [
     element: <RequireAuth />,
     children: [
       { path: '/dashboard', element: <SuspenseWrap>{placeholder('Dashboard')}</SuspenseWrap> },
-      { path: '/campus-map', element: <SuspenseWrap>{placeholder('Campus Map')}</SuspenseWrap> },
+      { path: '/campus-map', element: <SuspenseWrap><CampusMap /></SuspenseWrap> },
       { path: '/find-classroom', element: <SuspenseWrap>{placeholder('Find Classroom')}</SuspenseWrap> },
       {
         element: <RoleGuard roles={['ADMIN', 'FACULTY', 'STUDENT']} />,
@@ -101,16 +114,17 @@ const routes: RouteObject[] = [
         path: '/admin',
         element: <RoleGuard roles={['ADMIN']} />,
         children: [
-          { path: 'buildings', element: <SuspenseWrap>{placeholder('Buildings')}</SuspenseWrap> },
-          { path: 'rooms', element: <SuspenseWrap>{placeholder('Rooms')}</SuspenseWrap> },
-          { path: 'timetable', element: <SuspenseWrap>{placeholder('Timetable Admin')}</SuspenseWrap> },
-          { path: 'complaints', element: <SuspenseWrap>{placeholder('Complaint Management')}</SuspenseWrap> },
-          { path: 'analytics', element: <SuspenseWrap>{placeholder('Analytics')}</SuspenseWrap> },
-          { path: 'optimization', element: <SuspenseWrap>{placeholder('Optimization')}</SuspenseWrap> },
-          { path: 'simulation', element: <SuspenseWrap>{placeholder('Simulation')}</SuspenseWrap> },
-          { path: 'energy', element: <SuspenseWrap>{placeholder('Energy')}</SuspenseWrap> },
-          { path: 'reports', element: <SuspenseWrap>{placeholder('Reports')}</SuspenseWrap> },
-          { path: 'ml', element: <SuspenseWrap>{placeholder('ML Models')}</SuspenseWrap> },
+          { path: 'buildings', element: <SuspenseWrap><BuildingManagement /></SuspenseWrap> },
+          { path: 'buildings/:buildingId/blueprints', element: <SuspenseWrap><FloorBlueprintUpload /></SuspenseWrap> },
+          { path: 'rooms', element: <SuspenseWrap><RoomManagement /></SuspenseWrap> },
+          { path: 'timetable', element: <SuspenseWrap><TimetableManagement /></SuspenseWrap> },
+          { path: 'complaints', element: <SuspenseWrap><ComplaintManagement /></SuspenseWrap> },
+          { path: 'analytics', element: <SuspenseWrap><AnalyticsDashboard /></SuspenseWrap> },
+          { path: 'optimization', element: <SuspenseWrap><OptimizationPage /></SuspenseWrap> },
+          { path: 'simulation', element: <SuspenseWrap><SimulationPage /></SuspenseWrap> },
+          { path: 'energy', element: <SuspenseWrap><EnergyDashboard /></SuspenseWrap> },
+          { path: 'reports', element: <SuspenseWrap><ReportsPage /></SuspenseWrap> },
+          { path: 'ml', element: <SuspenseWrap><MLForecasts /></SuspenseWrap> },
           { index: true, element: <Navigate to="/admin/analytics" replace /> },
         ],
       },
