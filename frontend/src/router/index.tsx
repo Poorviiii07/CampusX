@@ -25,6 +25,24 @@ const EnergyDashboard = lazy(() => import('@/pages/admin/EnergyDashboard'));
 const MLForecasts = lazy(() => import('@/pages/admin/MLForecasts'));
 const ReportsPage = lazy(() => import('@/pages/admin/ReportsPage'));
 
+// Shared pages
+const FindClassroomPage = lazy(() => import('@/pages/shared/FindClassroomPage'));
+const TimetablePage = lazy(() => import('@/pages/shared/TimetablePage'));
+const ComplaintsPage = lazy(() => import('@/pages/shared/ComplaintsPage'));
+
+// Faculty pages
+const UploadResourcePage = lazy(() => import('@/pages/faculty/UploadResourcePage'));
+const MyUploadsPage = lazy(() => import('@/pages/faculty/MyUploadsPage'));
+const MyReservationsPage = lazy(() => import('@/pages/faculty/MyReservationsPage'));
+const ReportIssuePage = lazy(() => import('@/pages/faculty/ReportIssuePage'));
+
+// Student pages
+const ResourceSearchPage = lazy(() => import('@/pages/student/ResourceSearchPage'));
+const MyTimetablePage = lazy(() => import('@/pages/student/MyTimetablePage'));
+
+// Guest pages
+const GuestHomePage = lazy(() => import('@/pages/guest/GuestHomePage'));
+
 function Loading() {
   return (
     <div className="flex h-full items-center justify-center py-20">
@@ -95,11 +113,12 @@ const routes: RouteObject[] = [
     children: [
       { path: '/dashboard', element: <SuspenseWrap>{placeholder('Dashboard')}</SuspenseWrap> },
       { path: '/campus-map', element: <SuspenseWrap><CampusMap /></SuspenseWrap> },
-      { path: '/find-classroom', element: <SuspenseWrap>{placeholder('Find Classroom')}</SuspenseWrap> },
+      { path: '/find-classroom', element: <SuspenseWrap><FindClassroomPage /></SuspenseWrap> },
+      { path: '/guest', element: <SuspenseWrap><GuestHomePage /></SuspenseWrap> },
       {
         element: <RoleGuard roles={['ADMIN', 'FACULTY', 'STUDENT']} />,
         children: [
-          { path: '/timetable', element: <SuspenseWrap>{placeholder('My Timetable')}</SuspenseWrap> },
+          { path: '/timetable', element: <SuspenseWrap><TimetablePage /></SuspenseWrap> },
         ],
       },
       {
@@ -107,7 +126,7 @@ const routes: RouteObject[] = [
         children: [
           { path: '/ai-copilot', element: <SuspenseWrap>{placeholder('AI Copilot')}</SuspenseWrap> },
           { path: '/resources', element: <SuspenseWrap>{placeholder('Resources')}</SuspenseWrap> },
-          { path: '/complaints', element: <SuspenseWrap>{placeholder('Complaints')}</SuspenseWrap> },
+          { path: '/complaints', element: <SuspenseWrap><ComplaintsPage /></SuspenseWrap> },
         ],
       },
       {
@@ -132,8 +151,10 @@ const routes: RouteObject[] = [
         path: '/faculty',
         element: <RoleGuard roles={['FACULTY', 'ADMIN']} />,
         children: [
-          { path: 'upload', element: <SuspenseWrap>{placeholder('Upload Resource')}</SuspenseWrap> },
-          { path: 'reservations', element: <SuspenseWrap>{placeholder('My Reservations')}</SuspenseWrap> },
+          { path: 'upload', element: <SuspenseWrap><UploadResourcePage /></SuspenseWrap> },
+          { path: 'my-uploads', element: <SuspenseWrap><MyUploadsPage /></SuspenseWrap> },
+          { path: 'reservations', element: <SuspenseWrap><MyReservationsPage /></SuspenseWrap> },
+          { path: 'report-issue', element: <SuspenseWrap><ReportIssuePage /></SuspenseWrap> },
           { index: true, element: <Navigate to="/faculty/upload" replace /> },
         ],
       },
@@ -141,7 +162,8 @@ const routes: RouteObject[] = [
         path: '/student',
         element: <RoleGuard roles={['STUDENT', 'ADMIN']} />,
         children: [
-          { path: 'resources', element: <SuspenseWrap>{placeholder('My Resources')}</SuspenseWrap> },
+          { path: 'resources', element: <SuspenseWrap><ResourceSearchPage /></SuspenseWrap> },
+          { path: 'timetable', element: <SuspenseWrap><MyTimetablePage /></SuspenseWrap> },
           { index: true, element: <Navigate to="/student/resources" replace /> },
         ],
       },
