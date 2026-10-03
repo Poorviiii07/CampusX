@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Complete backend API — all Express routes, controllers, services, middleware, and the ML FastAPI service. Depends on FEAT-001 (Prisma schema and seed must exist). Independent of FEAT-003 (frontend). Covers Phases 1-9, 11-14 of the plan: auth, buildings, rooms, timetable, availability, reservations, resources, complaints, AI copilot, analytics, optimization, simulation, energy, reports, ML proxy.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Create campus-x/backend/src/utils/response.ts exporting: sendSuccess(res, data, message?, statusCode=200), sendError(res, message, statusCode=400, errors?). Both return { success: bool, data, message, errors } shape.",
     "Create campus-x/backend/src/utils/period.ts exporting: PERIOD_TIMES array of {period:number, start:string, end:string} for periods 1-8 (e.g. period 1 = 08:00-08:55, period 2 = 09:00-09:55, ... period 8 = 15:00-15:55). Export getCurrentPeriod(date?:Date):number|null (returns null if outside all periods). Export getPeriodTimes(period:number):{start:string,end:string}. Export isDayOfWeek(date:Date):DayOfWeek|null (returns null for Sunday).",
