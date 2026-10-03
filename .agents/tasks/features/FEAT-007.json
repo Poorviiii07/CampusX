@@ -2,7 +2,7 @@
   "id": "FEAT-007",
   "type": "feat",
   "description": "Final integration, Docker Compose wiring, end-to-end demo scenario verification, and merge-ready finalization. Depends on all previous FEATs (001-006). This FEAT does NOT add new features — it verifies cross-FEAT seams, fixes integration issues, runs all 7 demo scenarios, creates the smoke-test script, and ensures the full build is clean.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Verify docker-compose.yml is correct: postgres service has healthcheck (pg_isready), backend depends_on postgres with condition service_healthy, frontend depends_on backend. All env vars passed from .env file via env_file: .env directive. Volumes: postgres-data named volume, backend uploads/ bind-mounted so files persist across restarts.",
     "Create campus-x/.env with actual values for local development: DATABASE_URL=postgresql://campusx:campusx123@localhost:5432/campusx, JWT_SECRET=campus-x-jwt-secret-dev-2026, JWT_REFRESH_SECRET=campus-x-refresh-secret-dev-2026, PORT=3001, FRONTEND_URL=http://localhost:5173, ML_SERVICE_URL=http://localhost:8001, OPENAI_API_KEY= (empty). NOTE: .env is gitignored, only .env.example is committed.",
