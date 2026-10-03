@@ -115,7 +115,12 @@ export default function RoomManagement() {
       </Card>
 
       <Card className="p-4">
-        {rooms.isLoading ? <Skeleton shape="row" count={6} /> : (
+        {rooms.isLoading ? <Skeleton shape="row" count={6} /> : rooms.isError ? (
+          <div className="py-6 text-center">
+            <p className="text-sm text-danger-600 mb-3">Failed to load rooms.</p>
+            <Button variant="ghost" size="sm" onClick={() => rooms.refetch()}>Retry</Button>
+          </div>
+        ) : (
           <Table columns={columns} data={rooms.data ?? []} rowKey={(r) => r.id} emptyMessage="No rooms match the current filters" />
         )}
       </Card>

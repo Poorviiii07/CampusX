@@ -23,7 +23,7 @@ export default function MyUploadsPage() {
   const [examTypeFilter, setExamTypeFilter] = useState('');
   const [deleting, setDeleting] = useState<Resource | null>(null);
 
-  const { data: uploads = [], isLoading } = useQuery({
+  const { data: uploads = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['my-uploads'],
     queryFn: () => resourcesApi.getMyUploads(),
   });
@@ -93,6 +93,13 @@ export default function MyUploadsPage() {
       <Card>
         {isLoading ? (
           <div className="p-4"><Skeleton shape="row" count={5} /></div>
+        ) : isError ? (
+          <EmptyState
+            title="Failed to load uploads"
+            description="There was an error fetching your uploads."
+            actionLabel="Retry"
+            onAction={() => refetch()}
+          />
         ) : filtered.length === 0 ? (
           <EmptyState title="No uploads found" description="Upload a resource to see it here." />
         ) : (

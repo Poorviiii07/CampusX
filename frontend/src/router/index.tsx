@@ -11,6 +11,7 @@ const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'));
 const PlaceholderPage = lazy(() => import('@/pages/PlaceholderPage'));
+const AICopilotPage = lazy(() => import('@/pages/AICopilotPage'));
 
 const CampusMap = lazy(() => import('@/pages/CampusMap'));
 const AnalyticsDashboard = lazy(() => import('@/pages/admin/AnalyticsDashboard'));
@@ -124,7 +125,7 @@ const routes: RouteObject[] = [
       {
         element: <RoleGuard roles={['ADMIN', 'FACULTY', 'STUDENT']} />,
         children: [
-          { path: '/ai-copilot', element: <SuspenseWrap>{placeholder('AI Copilot')}</SuspenseWrap> },
+          { path: '/ai-copilot', element: <SuspenseWrap><AICopilotPage /></SuspenseWrap> },
           { path: '/resources', element: <SuspenseWrap>{placeholder('Resources')}</SuspenseWrap> },
           { path: '/complaints', element: <SuspenseWrap><ComplaintsPage /></SuspenseWrap> },
         ],

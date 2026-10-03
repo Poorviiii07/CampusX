@@ -45,7 +45,7 @@ export default function ResourceSearchPage() {
     enabled: !!filters.departmentId,
   });
 
-  const { data: resources, isFetching, refetch } = useQuery({
+  const { data: resources, isFetching, isError: isSearchError, refetch } = useQuery({
     queryKey: ['resources-search', filters],
     queryFn: () =>
       resourcesApi.search({
@@ -143,6 +143,13 @@ export default function ResourceSearchPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Skeleton shape="card" count={6} />
             </div>
+          ) : isSearchError ? (
+            <EmptyState
+              title="Search failed"
+              description="There was an error fetching resources. Please try again."
+              actionLabel="Retry"
+              onAction={() => refetch()}
+            />
           ) : resourceList.length === 0 ? (
             <EmptyState title="No resources found" description="Try different filters." />
           ) : (

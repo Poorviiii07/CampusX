@@ -44,7 +44,7 @@ export default function ComplaintsPage() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<Complaint | null>(null);
 
-  const { data: complaints = [], isLoading } = useQuery({
+  const { data: complaints = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['complaints', user?.id],
     queryFn: () => complaintsApi.list(),
   });
@@ -72,6 +72,14 @@ export default function ComplaintsPage() {
           <div className="p-4">
             <Skeleton shape="row" count={5} />
           </div>
+        ) : isError ? (
+          <EmptyState
+            icon={<AlertTriangle size={40} className="text-danger-400" />}
+            title="Failed to load complaints"
+            description="There was an error fetching complaints."
+            actionLabel="Retry"
+            onAction={() => refetch()}
+          />
         ) : myComplaints.length === 0 ? (
           <EmptyState
             title="No complaints filed"

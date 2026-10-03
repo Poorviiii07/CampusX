@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Printer } from 'lucide-react';
+import { Printer, AlertTriangle } from 'lucide-react';
 import type { DayOfWeek, TimetableEntry } from '@/types';
 import { timetableApi } from '@/api/endpoints';
 import { useAuth } from '@/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
 import Skeleton from '@/components/ui/Skeleton';
+import EmptyState from '@/components/ui/EmptyState';
 
 const DAYS: DayOfWeek[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const DAY_LABELS: Record<DayOfWeek, string> = {
@@ -48,7 +49,7 @@ export default function TimetablePage() {
 
   const queryClassId = isAdmin ? selectedClassId : undefined;
 
-  const { data: entries = [], isLoading } = useQuery({
+  const { data: entries = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['timetable-entries', queryClassId],
     queryFn: () => timetableApi.getEntries({ classId: queryClassId }),
     enabled: !isAdmin || !!selectedClassId,
@@ -87,6 +88,14 @@ export default function TimetablePage() {
         <p className="text-sm text-gray-500">Select a class to view its timetable.</p>
       ) : isLoading ? (
         <Skeleton shape="card" count={4} />
+      ) : isError ? (
+        <EmptyState
+          icon={<AlertTriangle size={40} className="text-danger-400" />}
+          title="Failed to load timetable"
+          description="There was an error fetching timetable data."
+          actionLabel="Retry"
+          onAction={() => refetch()}
+        />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
           <table className="min-w-full text-sm">

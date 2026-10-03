@@ -90,7 +90,12 @@ export default function BuildingManagement() {
 
       {tab === 'list' ? (
         <Card className="p-4">
-          {buildings.isLoading ? <Skeleton shape="row" count={5} /> : (
+          {buildings.isLoading ? <Skeleton shape="row" count={5} /> : buildings.isError ? (
+            <div className="py-6 text-center">
+              <p className="text-sm text-danger-600 mb-3">Failed to load buildings.</p>
+              <Button variant="ghost" size="sm" onClick={() => buildings.refetch()}>Retry</Button>
+            </div>
+          ) : (
             <Table columns={columns} data={buildings.data ?? []} rowKey={(b) => b.id} />
           )}
         </Card>

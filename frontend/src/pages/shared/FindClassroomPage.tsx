@@ -62,7 +62,7 @@ export default function FindClassroomPage() {
     queryFn: () => buildingsApi.list({ isActive: true }),
   });
 
-  const { data: rooms, isFetching, refetch } = useQuery({
+  const { data: rooms, isFetching, isError: isRoomsError, refetch } = useQuery({
     queryKey: ['available-rooms', filters],
     queryFn: () =>
       availabilityApi.getRooms({
@@ -181,6 +181,13 @@ export default function FindClassroomPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Skeleton shape="card" count={6} />
             </div>
+          ) : isRoomsError ? (
+            <EmptyState
+              title="Search failed"
+              description="There was an error fetching available rooms. Please try again."
+              actionLabel="Retry"
+              onAction={() => refetch()}
+            />
           ) : !rooms || rooms.length === 0 ? (
             <EmptyState
               title="No rooms found"

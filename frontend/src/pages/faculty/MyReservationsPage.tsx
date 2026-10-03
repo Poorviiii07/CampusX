@@ -28,7 +28,7 @@ export default function MyReservationsPage() {
   const qc = useQueryClient();
   const [cancelling, setCancelling] = useState<RoomReservation | null>(null);
 
-  const { data: reservations = [], isLoading } = useQuery({
+  const { data: reservations = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['my-reservations'],
     queryFn: () => reservationsApi.getMyReservations(),
   });
@@ -59,6 +59,13 @@ export default function MyReservationsPage() {
       <Card>
         {isLoading ? (
           <div className="p-4"><Skeleton shape="row" count={5} /></div>
+        ) : isError ? (
+          <EmptyState
+            title="Failed to load reservations"
+            description="There was an error fetching your reservations."
+            actionLabel="Retry"
+            onAction={() => refetch()}
+          />
         ) : reservations.length === 0 ? (
           <EmptyState
             title="No reservations yet"

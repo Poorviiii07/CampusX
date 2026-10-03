@@ -102,7 +102,12 @@ export default function ComplaintManagement() {
 
       {/* Table */}
       <Card className="overflow-hidden">
-        {complaints.isLoading ? <div className="p-4"><Skeleton shape="row" count={5} /></div> : filtered.length === 0 ? (
+        {complaints.isLoading ? <div className="p-4"><Skeleton shape="row" count={5} /></div> : complaints.isError ? (
+          <div className="py-8 text-center">
+            <p className="text-sm text-danger-600 mb-3">Failed to load complaints.</p>
+            <button type="button" className="text-sm text-primary-700 hover:underline" onClick={() => complaints.refetch()}>Retry</button>
+          </div>
+        ) : filtered.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-gray-500">No complaints match the filters.</p>
         ) : (
           <div className="overflow-x-auto">
