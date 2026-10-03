@@ -12,7 +12,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - campusx_postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U campusx -d campusx']
       interval: 10s
@@ -23,15 +23,13 @@ services:
     build: ./backend
     container_name: campusx-backend
     restart: unless-stopped
+    env_file: .env
+    environment:
+      # Override localhost refs for container-to-container networking
+      DATABASE_URL: postgresql://campusx:campusx123@postgres:5432/campusx
+      ML_SERVICE_URL: http://ml-service:8001
     ports:
       - '3001:3001'
-    environment:
-      - DATABASE_URL=postgresql://campusx:campusx123@postgres:5432/campusx
-      - JWT_SECRET=campus_x_jwt_secret_2025
-      - JWT_REFRESH_SECRET=campus_x_refresh_secret_2025
-      - PORT=3001
-      - FRONTEND_URL=http://localhost:5173
-      - ML_SERVICE_URL=http://ml-service:8001
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,6 +40,7 @@ services:
     build: ./frontend
     container_name: campusx-frontend
     restart: unless-stopped
+    env_file: ./frontend/.env
     ports:
       - '5173:5173'
     depends_on:
@@ -55,5 +54,5 @@ services:
       - '8001:8001'
 
 volumes:
-  campusx_postgres_data:
+  postgres-data:
     driver: local

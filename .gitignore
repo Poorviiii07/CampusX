@@ -30,6 +30,7 @@ venv/
 *.egg-info/
 dist/
 build/
+.pytest_cache/
 
 # OS
 .DS_Store
@@ -43,6 +44,7 @@ desktop.ini
 *.swo
 
 # Uploads (user content — not tracked)
+uploads/*
 backend/uploads/*
 !backend/uploads/.gitkeep
 
