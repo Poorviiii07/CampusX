@@ -2,7 +2,7 @@
   "id": "FEAT-006",
   "type": "feat",
   "description": "AI Campus Copilot chat interface, global UI polish (loading skeletons everywhere, toast notifications, empty states, error boundaries, 404 page, deep blue+teal theme finalization), and documentation. Depends on FEAT-003 (core frontend), FEAT-002 (AI backend endpoint). Independent of FEAT-004 and FEAT-005 in terms of files, but the polish step touches all pages — so this runs after those are stable.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Create campus-x/frontend/src/pages/AICopilotPage.tsx: full-page chat interface. Layout: left sidebar showing conversation history (each session title = first message truncated to 40 chars). Main area: top = chat message list, bottom = input bar. Message bubbles: user messages right-aligned (accent background), bot messages left-aligned (white card with subtle shadow). Each bot message shows: text response + optional inline cards (for LOCATION_SEARCH → RoomDetailMiniCard, AVAILABILITY_SEARCH → AvailabilityResultMiniCard, RESOURCE_SEARCH → ResourceMiniCard). Typing indicator: animated 3-dot bounce while waiting for response. Send button + Enter key to submit. On empty state (no messages): show 6 suggestion chips: 'Where is the ladies restroom?', 'Find available classrooms now', 'CSE Sem 5 timetable', 'Download DBMS question papers', 'Show my complaints', 'Where is CSE-204?'. Clicking chip fills input and auto-submits. Accessible: role=log aria-live=polite on message list.",
     "Create campus-x/frontend/src/components/chat/MessageBubble.tsx: renders user or bot message. Bot message: avatar (robot icon, accent color), text, optional cards rendered below text. User message: text only, user avatar initial.",
