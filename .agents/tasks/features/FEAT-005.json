@@ -2,7 +2,7 @@
   "id": "FEAT-005",
   "type": "feat",
   "description": "Faculty pages, Student pages, and shared Find Available Classroom page. Depends on FEAT-003 (core frontend) and FEAT-002 (backend APIs). Independent of FEAT-004 (admin pages) and FEAT-006 (AI copilot). All pages use TanStack Query, react-hook-form + zod, and the shared UI library.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Create campus-x/frontend/src/pages/shared/FindClassroomPage.tsx (accessible to ALL roles including guest): top filter bar with fields: Date (date picker), Period (1-8 select), Required Capacity (number input), Room Type (select with RoomType options), Building (select loading from /api/buildings), Equipment (multi-checkbox for common equipment like Projector, Smart Board, AC, Computer Lab). 'Find Available Now' quick button that fills Date=today and Period=currentPeriod. On submit: GET /api/availability/rooms with query params. Results: grid of RoomCard components. Each RoomCard shows room code, building/floor, capacity badge, type badge, equipment tags, status=AVAILABLE badge, a Reserve button (faculty+admin only, disabled for student/guest). Empty state if no rooms match. Loading skeleton during fetch.",
     "Create campus-x/frontend/src/components/rooms/RoomCard.tsx: card component showing room details for the availability results. Props: room data, showReserveButton bool. Reserve button opens ReservationModal.",
