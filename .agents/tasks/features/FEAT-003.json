@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Frontend core infrastructure: Tailwind theme, shared types, Axios client with interceptors, AuthContext with JWT refresh, React Router with all routes and role guards, AppShell layout, and a complete shared UI component library. Depends on FEAT-001 (package scaffolding) and FEAT-002 (backend running for login to work). This FEAT produces no user-facing pages beyond Login — all pages are built in FEAT-004 through FEAT-007.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Configure campus-x/frontend/tailwind.config.ts: extend colors with primary (deep blue: 50-900 scale using #EFF6FF through #1E3A5F), accent (teal: 50-900 using #F0FDFA through #134E4A), danger (#EF4444 variants), warning (#F59E0B variants), success (#10B981 variants). Set darkMode: 'class'. Content: ['./index.html','./src/**/*.{ts,tsx}'].",
     "Create campus-x/frontend/src/types/index.ts with ALL TypeScript interfaces matching backend Prisma output: User, Building, Floor, Room, Department, Subject, Semester, Class, TimetableEntry, RoomReservation, Resource, Complaint, ComplaintUpdate, EnergyRecord. Also API types: ApiResponse<T>, PaginatedResponse<T>, LoginRequest, LoginResponse, AvailabilityQuery, ComplaintCreateRequest, ResourceUploadRequest. Use exact field names from Prisma schema (camelCase).",
