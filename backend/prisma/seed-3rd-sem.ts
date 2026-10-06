@@ -110,6 +110,7 @@ async function main(){
     {name:'Dr. Shashank Shetty',    email:'shashank.shetty@campusx.edu'},
     {name:'Dr. Kumudakshi',         email:'kumudakshi@campusx.edu'},
     {name:'Ms. Anupama H C',        email:'anupama.hc@campusx.edu'},
+    {name:'Mr. Akhilraj V Gadagkar', email:'akhilraj.gadagkar@campusx.edu'},
   ];
   const fMap:Record<string,string>={};
   for(const fd of fDefs){
@@ -161,7 +162,15 @@ async function main(){
     const ex=await prisma.timetableEntry.findFirst({where:{classId,semesterId:sem!.id,day:day,period:period}});
     if(ex) return;
     const{startTime,endTime}=pt(period);
-    await prisma.timetableEntry.create({data:{classId,subjectId,facultyId,roomId,semesterId:sem!.id,day:day,period:period,startTime,endTime}});
+    try {
+      await prisma.timetableEntry.create({data:{classId,subjectId,facultyId,roomId,semesterId:sem!.id,day:day,period:period,startTime,endTime}});
+    } catch(e: any) {
+      if(e?.code==='P2002'){
+        console.warn(`  ⚠ Skipped (constraint): Sec ${sec} ${day} P${period} ${subj} – ${e.meta?.target}`);
+      } else {
+        throw e;
+      }
+    }
   }
 
   // ── 3A (Room 11, Advisor: Ms. Soumya Ashwath) ────────────────────────────

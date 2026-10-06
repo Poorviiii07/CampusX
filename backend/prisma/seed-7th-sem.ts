@@ -314,19 +314,28 @@ async function main() {
     if (existing) return; // don't duplicate
 
     const { startTime, endTime } = periodTime(period);
-    await prisma.timetableEntry.create({
-      data: {
-        classId,
-        subjectId,
-        facultyId,
-        roomId,
-        semesterId: sem!.id,
-        day:        day,
-        period:     period,
-        startTime,
-        endTime,
-      },
-    });
+    try {
+      await prisma.timetableEntry.create({
+        data: {
+          classId,
+          subjectId,
+          facultyId,
+          roomId,
+          semesterId: sem!.id,
+          day:        day,
+          period:     period,
+          startTime,
+          endTime,
+        },
+      });
+    } catch (e: any) {
+      // P2002 = unique constraint violation (e.g. faculty teaching two sections at same time)
+      if (e?.code === 'P2002') {
+        console.warn(`  ⚠ Skipped (constraint): Sec ${section} ${day} P${period} ${subjectShort} – ${e.meta?.target}`);
+      } else {
+        throw e;
+      }
+    }
   }
 
   // ────────────────────────────────────────────────────────────────────────────

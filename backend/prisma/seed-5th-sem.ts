@@ -119,6 +119,9 @@ async function main() {
     { name:'Mr. Sachin Shetty',          email:'sachin.shetty@campusx.edu' },
     { name:'Ms. Sowmya P',               email:'sowmya.p@campusx.edu' },
     { name:'Mr. Dharshan',               email:'dharshan@campusx.edu' },
+    { name:'Mr. Akhilraj V Gadagkar',    email:'akhilraj.gadagkar@campusx.edu' },
+    { name:'Mr. Prithviraj Jain',        email:'prithviraj.jain@campusx.edu' },
+    { name:'Dr. Vijaya Murari T',        email:'vijaya.murari@campusx.edu' },
   ];
   const fMap: Record<string,string> = {};
   for (const fd of fDefs) {
@@ -178,7 +181,15 @@ async function main() {
     const ex = await prisma.timetableEntry.findFirst({ where:{ classId, semesterId:sem!.id, day:day, period:period } });
     if (ex) return;
     const { startTime, endTime } = pt(period);
-    await prisma.timetableEntry.create({ data:{ classId, subjectId, facultyId, roomId, semesterId:sem!.id, day:day, period:period, startTime, endTime } });
+    try {
+      await prisma.timetableEntry.create({ data:{ classId, subjectId, facultyId, roomId, semesterId:sem!.id, day:day, period:period, startTime, endTime } });
+    } catch (e: any) {
+      if (e?.code === 'P2002') {
+        console.warn(`  ⚠ Skipped (constraint): Sec ${sec} ${day} P${period} ${subj} – ${e.meta?.target}`);
+      } else {
+        throw e;
+      }
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
