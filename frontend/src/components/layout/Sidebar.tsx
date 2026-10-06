@@ -36,7 +36,9 @@ const AUTH_NO_GUEST: Role[] = ['ADMIN', 'FACULTY', 'STUDENT'];
 const FAC_STU_ADMIN: Role[] = ['ADMIN', 'FACULTY', 'STUDENT'];
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ALL, section: 'General' },
+  { label: 'Dashboard', href: '/campus-map', icon: LayoutDashboard, roles: ['GUEST'], section: 'General' },
+  { label: 'Analytics', href: '/admin/analytics', icon: LayoutDashboard, roles: ['ADMIN'], section: 'General' },
+  { label: 'Dashboard', href: '/timetable', icon: LayoutDashboard, roles: ['FACULTY', 'STUDENT'], section: 'General' },
   { label: 'Campus Map', href: '/campus-map', icon: Map, roles: ALL, section: 'General' },
   { label: 'Find Classroom', href: '/find-classroom', icon: Search, roles: ALL, section: 'General' },
   { label: 'Timetable', href: '/timetable', icon: CalendarDays, roles: FAC_STU_ADMIN, section: 'General' },
@@ -48,7 +50,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Rooms', href: '/admin/rooms', icon: DoorOpen, roles: ['ADMIN'], section: 'Admin' },
   { label: 'Timetable Admin', href: '/admin/timetable', icon: CalendarRange, roles: ['ADMIN'], section: 'Admin' },
   { label: 'Complaint Mgmt', href: '/admin/complaints', icon: MessageSquareWarning, roles: ['ADMIN'], section: 'Admin' },
-  { label: 'Analytics', href: '/admin/analytics', icon: BarChart3, roles: ['ADMIN'], section: 'Admin' },
   { label: 'Optimization', href: '/admin/optimization', icon: Sparkles, roles: ['ADMIN'], section: 'Admin' },
   { label: 'Simulation', href: '/admin/simulation', icon: FlaskConical, roles: ['ADMIN'], section: 'Admin' },
   { label: 'Energy', href: '/admin/energy', icon: Zap, roles: ['ADMIN'], section: 'Admin' },

@@ -9,6 +9,9 @@
     "start": "node dist/server.js",
     "db:migrate": "prisma migrate dev",
     "db:seed": "ts-node -r tsconfig-paths/register prisma/seed.ts",
+    "db:seed-7th": "ts-node -r tsconfig-paths/register prisma/seed-7th-sem.ts",
+    "db:seed-5th": "ts-node -r tsconfig-paths/register prisma/seed-5th-sem.ts",
+    "db:seed-3rd": "ts-node -r tsconfig-paths/register prisma/seed-3rd-sem.ts",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio"
   },

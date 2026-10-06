@@ -32,6 +32,8 @@ function redirectFor(role: string): string {
 
 const demoCreds = [
   { role: 'Admin', email: 'admin@campusx.edu', password: 'Admin@123' },
+  { role: 'Faculty', email: 'faculty@campusx.edu', password: 'Faculty@123' },
+  { role: 'Student', email: 'student@campusx.edu', password: 'Student@123' },
   { role: 'Guest', email: 'guest@campusx.edu', password: 'Guest@123' },
 ];
 
