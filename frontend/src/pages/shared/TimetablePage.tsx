@@ -24,12 +24,23 @@ interface CellEntry {
   subjectId: string;
   roomId: string;
   classId: string;
+  subject?: { code: string; name: string };
+  room?: { code: string };
+  faculty?: { name: string };
 }
 
 function buildGrid(entries: TimetableEntry[]): Map<string, CellEntry> {
   const map = new Map<string, CellEntry>();
   for (const e of entries) {
-    map.set(`${e.day}-${e.period}`, { subjectId: e.subjectId, roomId: e.roomId, classId: e.classId });
+    const entry = e as TimetableEntry & { subject?: { code: string; name: string }; room?: { code: string }; faculty?: { name: string } };
+    map.set(`${e.day}-${e.period}`, {
+      subjectId: e.subjectId,
+      roomId: e.roomId,
+      classId: e.classId,
+      subject: entry.subject,
+      room: entry.room,
+      faculty: entry.faculty,
+    });
   }
   return map;
 }
@@ -128,8 +139,8 @@ export default function TimetablePage() {
                       >
                         {cell ? (
                           <div className="flex flex-col gap-0.5">
-                            <span className="font-medium text-gray-800 text-xs">{cell.subjectId.slice(0, 8)}</span>
-                            <span className="text-gray-500 text-xs">{cell.roomId.slice(0, 8)}</span>
+                            <span className="font-medium text-gray-800 text-xs">{cell.subject?.code ?? cell.subjectId.slice(0, 8)}</span>
+                            <span className="text-gray-500 text-xs">{cell.room?.code ?? cell.roomId.slice(0, 8)}</span>
                           </div>
                         ) : (
                           <span className="text-gray-400 text-xs">Free</span>

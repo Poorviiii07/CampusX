@@ -88,9 +88,9 @@ export const departmentsApi = {
 // ─── Timetable ──────────────────────────────────────────────────────────
 export const timetableApi = {
   getEntries: (params: { classId?: string; semesterId?: string; day?: string }) =>
-    unwrap<TimetableEntry[]>(client.get('/timetable', { params })),
+    unwrap<TimetableEntry[]>(client.get('/timetable/entries', { params })),
   createEntry: (body: Partial<TimetableEntry>) =>
-    unwrap<TimetableEntry>(client.post('/timetable', body)),
+    unwrap<TimetableEntry>(client.post('/timetable/entries', body)),
   importCSV: (file: File, semesterId: string) => {
     const form = new FormData();
     form.append('file', file);
@@ -183,11 +183,16 @@ export const aiApi = {
 export const analyticsApi = {
   overview: () =>
     unwrap<{
-      totalBuildings: number;
-      totalRooms: number;
-      totalUsers: number;
-      totalComplaints: number;
-      activeReservations: number;
+      buildings: number;
+      rooms: number;
+      availableRooms: number;
+      occupiedRooms: number;
+      maintenanceRooms: number;
+      activeComplaints: number;
+      pendingComplaints: number;
+      resolvedToday: number;
+      todayClasses: number;
+      utilizationPercent: number;
     }>(client.get('/analytics/overview')),
   utilization: (params?: { buildingId?: string }) =>
     unwrap<Record<string, unknown>>(client.get('/analytics/utilization', { params })),

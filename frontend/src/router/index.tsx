@@ -112,7 +112,7 @@ const routes: RouteObject[] = [
   {
     element: <RequireAuth />,
     children: [
-      { path: '/dashboard', element: <SuspenseWrap>{placeholder('Dashboard')}</SuspenseWrap> },
+      { path: '/dashboard', element: <SuspenseWrap><RoleRedirect /></SuspenseWrap> },
       { path: '/campus-map', element: <SuspenseWrap><CampusMap /></SuspenseWrap> },
       { path: '/find-classroom', element: <SuspenseWrap><FindClassroomPage /></SuspenseWrap> },
       { path: '/guest', element: <SuspenseWrap><GuestHomePage /></SuspenseWrap> },
@@ -126,7 +126,7 @@ const routes: RouteObject[] = [
         element: <RoleGuard roles={['ADMIN', 'FACULTY', 'STUDENT']} />,
         children: [
           { path: '/ai-copilot', element: <SuspenseWrap><AICopilotPage /></SuspenseWrap> },
-          { path: '/resources', element: <SuspenseWrap>{placeholder('Resources')}</SuspenseWrap> },
+          { path: '/resources', element: <SuspenseWrap><ResourceSearchPage /></SuspenseWrap> },
           { path: '/complaints', element: <SuspenseWrap><ComplaintsPage /></SuspenseWrap> },
         ],
       },
@@ -145,6 +145,7 @@ const routes: RouteObject[] = [
           { path: 'energy', element: <SuspenseWrap><EnergyDashboard /></SuspenseWrap> },
           { path: 'reports', element: <SuspenseWrap><ReportsPage /></SuspenseWrap> },
           { path: 'ml', element: <SuspenseWrap><MLForecasts /></SuspenseWrap> },
+          { path: 'dashboard', element: <Navigate to="/admin/analytics" replace /> },
           { index: true, element: <Navigate to="/admin/analytics" replace /> },
         ],
       },
@@ -187,6 +188,16 @@ const routes: RouteObject[] = [
     ),
   },
 ];
+
+function RoleRedirect() {
+  const { user } = useAuth();
+  switch (user?.role) {
+    case 'ADMIN':    return <Navigate to="/admin/analytics" replace />;
+    case 'FACULTY':  return <Navigate to="/timetable" replace />;
+    case 'STUDENT':  return <Navigate to="/timetable" replace />;
+    default:         return <Navigate to="/campus-map" replace />;
+  }
+}
 
 function RootRedirect() {
   const { isAuthenticated, isLoading } = useAuth();

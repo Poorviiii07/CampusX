@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Upload, AlertTriangle, Plus, Download } from 'lucide-react';
+import { Upload, AlertTriangle, Plus, Download, FileText } from 'lucide-react';
 import type { Class, DayOfWeek, Department, Semester, TimetableEntry } from '@/types';
 import { timetableApi, departmentsApi } from '@/api/endpoints';
 import client from '@/api/client';
@@ -14,6 +14,7 @@ import Badge from '@/components/ui/Badge';
 import Skeleton from '@/components/ui/Skeleton';
 import EmptyState from '@/components/ui/EmptyState';
 import TimetableEntryModal from './TimetableEntryModal';
+import TimetablePDFUpload from '@/components/timetable/TimetablePDFUpload';
 
 interface ConflictResult {
   type: 'ROOM_DOUBLE_BOOKED' | 'FACULTY_DOUBLE_BOOKED' | 'CLASS_DOUBLE_BOOKED' | 'CAPACITY_MISMATCH';
@@ -42,9 +43,8 @@ export default function TimetableManagement() {
 
   const semesters = useQuery<Semester[]>({ queryKey: ['semesters'], queryFn: timetableApi.getSemesters });
   const departments = useQuery<Department[]>({ queryKey: ['departments'], queryFn: departmentsApi.list });
-  const classes = useQuery<Class[]>({ queryKey: ['classes', semesterId], queryFn: () => timetableApi.getClasses({ semesterId }), enabled: !!semesterId });
-
   const activeSemesterId = semesterId || semesters.data?.find((s) => s.isActive)?.id || semesters.data?.[0]?.id || '';
+  const classes = useQuery<Class[]>({ queryKey: ['classes', activeSemesterId], queryFn: () => timetableApi.getClasses({ semesterId: activeSemesterId }), enabled: !!activeSemesterId });
   const filteredClasses = (classes.data ?? []).filter((c) => !departmentId || c.departmentId === departmentId);
   const activeClassId = classId || filteredClasses[0]?.id || '';
 
@@ -202,6 +202,15 @@ export default function TimetableManagement() {
           <FileInput accept=".csv" helperText="Columns: classId,subjectId,facultyId,roomId,day,period,startTime,endTime" onChange={setImportFile} />
         </div>
       </Modal>
+      {/* PDF Upload Section */}
+      <div className="mt-6">
+        <div className="flex items-center gap-2 mb-4">
+          <FileText size={18} className="text-primary-600" />
+          <h2 className="text-base font-semibold text-gray-800">Timetable PDF Repository</h2>
+          <span className="text-xs text-gray-500 ml-1">— upload official PDFs for reference</span>
+        </div>
+        <TimetablePDFUpload />
+      </div>
     </div>
   );
 }
