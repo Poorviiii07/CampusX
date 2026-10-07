@@ -18,7 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const role = user?.role ?? 'GUEST';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F3F1' }}>
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} role={role} />
       <div className={`flex flex-col min-h-screen transition-all duration-200 ${collapsed ? 'md:ml-[60px]' : 'md:ml-60'}`}>
         <TopBar />

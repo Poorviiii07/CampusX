@@ -82,15 +82,23 @@ export default function MyReservationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 bg-white">
-                {reservations.map((r) => (
+                {reservations.map((r) => {
+                  const res = r as RoomReservation & {
+                    room?: { code: string; name: string };
+                    class?: { name: string };
+                  };
+                  return (
                   <tr key={r.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-800">{r.roomId}</td>
+                    <td className="px-4 py-3 font-medium text-gray-800">
+                      {res.room?.code ?? r.roomId.slice(0, 8)}
+                      {res.room?.name && <span className="block text-xs text-gray-400">{res.room.name}</span>}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{new Date(r.date).toLocaleDateString()}</td>
                     <td className="px-4 py-3 text-gray-600">
                       {r.periodStart === r.periodEnd ? `P${r.periodStart}` : `P${r.periodStart}–P${r.periodEnd}`}
                     </td>
                     <td className="px-4 py-3 text-gray-700 max-w-[180px] truncate">{r.reason}</td>
-                    <td className="px-4 py-3 text-gray-600">{r.classId ?? '—'}</td>
+                    <td className="px-4 py-3 text-gray-600">{res.class?.name ?? '—'}</td>
                     <td className="px-4 py-3">
                       <Badge variant={STATUS_VARIANT[r.status]}>{r.status}</Badge>
                     </td>
@@ -108,7 +116,8 @@ export default function MyReservationsPage() {
                       )}
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -130,7 +139,7 @@ export default function MyReservationsPage() {
         }
       >
         <p className="text-sm text-gray-600">
-          Cancel reservation for room <span className="font-medium">{cancelling?.roomId}</span> on{' '}
+          Cancel reservation for room <span className="font-medium">{(cancelling as any)?.room?.code ?? cancelling?.roomId}</span> on{' '}
           {cancelling && new Date(cancelling.date).toLocaleDateString()}?
         </p>
       </Modal>

@@ -28,8 +28,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             {...register}
             {...rest}
-            className={`w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400 ${leftIcon ? 'pl-9' : ''} ${
-              error ? 'border-danger-400 focus:ring-danger-400' : 'border-gray-300'
+            className={`w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 ${leftIcon ? 'pl-9' : ''} ${
+              error ? 'border-danger-400 focus:ring-danger-400' : 'border-primary-200'
             } ${className}`}
           />
         </div>

@@ -31,8 +31,8 @@ export function RoomMarker({ room, x, y, highlighted, onSelect }: RoomMarkerProp
       className="group absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center focus:outline-none"
     >
       <span
-        className={`flex items-center justify-center rounded-full border-2 border-white text-white shadow-md transition-transform focus-visible:ring-2 focus-visible:ring-primary-600 ${
-          highlighted ? 'scale-125 ring-2 ring-primary-700' : 'group-hover:scale-110'
+        className={`flex items-center justify-center rounded-full border-2 border-white text-white shadow-md transition-transform ${
+          highlighted ? 'scale-125 ring-2 ring-primary-600' : 'group-hover:scale-110'
         }`}
         style={{ backgroundColor: cfg.color, width: 30, height: 30 }}
       >

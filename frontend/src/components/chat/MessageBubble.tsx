@@ -64,10 +64,10 @@ export function MessageBubble({ message, userInitial = 'U' }: MessageBubbleProps
   if (isUser) {
     return (
       <div className="flex items-end justify-end gap-2">
-        <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-accent-500 px-4 py-2.5 text-sm text-white shadow-sm">
+        <div className="max-w-[75%] rounded-2xl rounded-br-sm px-4 py-2.5 text-sm text-white shadow-sm" style={{ backgroundColor: '#9DAD6F' }}>
           {message.text}
         </div>
-        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-700 text-xs font-bold text-white">
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#5E574D' }}>
           {userInitial}
         </div>
       </div>
@@ -76,11 +76,11 @@ export function MessageBubble({ message, userInitial = 'U' }: MessageBubbleProps
 
   return (
     <div className="flex items-start gap-2">
-      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent-100 text-accent-600">
+      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: '#C3DFE0', color: '#5E574D' }}>
         <Bot size={16} />
       </div>
       <div className="max-w-[80%]">
-        <div className="rounded-2xl rounded-tl-sm bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm border border-gray-100">
+        <div className="rounded-2xl rounded-tl-sm bg-white px-4 py-2.5 text-sm shadow-sm border" style={{ color: '#3D3530', borderColor: '#EBE7E3' }}>
           <p className="whitespace-pre-wrap leading-relaxed">{message.text}</p>
         </div>
         {renderInlineCards(message.intent, message.results)}

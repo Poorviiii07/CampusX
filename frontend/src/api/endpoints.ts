@@ -127,9 +127,10 @@ export const reservationsApi = {
   list: (params?: { date?: string; roomId?: string }) =>
     unwrap<RoomReservation[]>(client.get('/reservations', { params })),
   getMyReservations: () =>
-    unwrap<RoomReservation[]>(client.get('/reservations/mine')),
+    unwrap<RoomReservation[]>(client.get('/reservations/my')),
+
   cancel: (id: string) =>
-    unwrap<RoomReservation>(client.patch(`/reservations/${id}/cancel`)),
+    unwrap<RoomReservation>(client.delete(`/reservations/${id}`)),
 };
 
 // ─── Resources ──────────────────────────────────────────────────────────

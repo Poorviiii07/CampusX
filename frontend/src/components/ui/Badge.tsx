@@ -11,11 +11,11 @@ export type BadgeVariant =
 
 const variantClasses: Record<BadgeVariant, string> = {
   primary: 'bg-primary-100 text-primary-800',
-  accent: 'bg-accent-100 text-accent-800',
-  success: 'bg-success-100 text-success-800',
+  accent:  'bg-accent-200 text-accent-800',
+  success: 'bg-success-100 text-success-700',
   warning: 'bg-warning-100 text-warning-800',
-  danger: 'bg-danger-100 text-danger-800',
-  gray: 'bg-gray-100 text-gray-700',
+  danger:  'bg-danger-100 text-danger-800',
+  gray:    'bg-gray-100 text-gray-700',
 };
 
 export interface BadgeProps {

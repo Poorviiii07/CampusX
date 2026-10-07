@@ -139,8 +139,26 @@ export default function TimetablePage() {
                       >
                         {cell ? (
                           <div className="flex flex-col gap-0.5">
-                            <span className="font-medium text-gray-800 text-xs">{cell.subject?.code ?? cell.subjectId.slice(0, 8)}</span>
-                            <span className="text-gray-500 text-xs">{cell.room?.code ?? cell.roomId.slice(0, 8)}</span>
+                            <span className={`font-semibold text-xs leading-tight ${
+                              cell.subject?.code === 'OE' ? 'text-purple-700' :
+                              ['IDS','CNS','NDB','DM','BI','ST','ESE','AEP'].includes(cell.subject?.code ?? '') ? 'text-accent-700' :
+                              'text-gray-800'
+                            }`}>
+                              {cell.subject?.code ?? cell.subjectId.slice(0,8)}
+                              {cell.subject?.code === 'OE' && (
+                                <span className="ml-1 text-[10px] bg-purple-100 text-purple-600 rounded px-1 font-normal">Elective</span>
+                              )}
+                              {['IDS','CNS','NDB','DM','BI','ST','ESE'].includes(cell.subject?.code ?? '') && (
+                                <span className="ml-1 text-[10px] bg-accent-100 text-accent-600 rounded px-1 font-normal">PE</span>
+                              )}
+                            </span>
+                            {cell.subject?.name && cell.subject.name !== cell.subject.code && (
+                              <span className="text-[10px] text-gray-400 leading-tight truncate max-w-[100px]" title={cell.subject.name}>
+                                {cell.subject.name}
+                              </span>
+                            )}
+                            <span className="text-gray-500 text-[10px]">{cell.faculty?.name?.split(' ').slice(-1)[0] ?? ''}</span>
+                            <span className="text-primary-600 text-[10px]">{cell.room?.code ?? ''}</span>
                           </div>
                         ) : (
                           <span className="text-gray-400 text-xs">Free</span>
@@ -152,6 +170,14 @@ export default function TimetablePage() {
               ))}
             </tbody>
           </table>
+          {/* Legend */}
+          <div className="flex items-center gap-4 px-4 py-2 border-t border-gray-100 bg-gray-50 text-xs text-gray-500 flex-wrap">
+            <span className="font-medium text-gray-600">Legend:</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-gray-700 inline-block"></span> Core Subject</span>
+            <span className="flex items-center gap-1"><span className="bg-purple-100 text-purple-600 rounded px-1.5 py-0.5">Elective</span> Open Elective (OE)</span>
+            <span className="flex items-center gap-1"><span className="bg-accent-100 text-accent-600 rounded px-1.5 py-0.5">PE</span> Professional Elective</span>
+            <span className="flex items-center gap-1"><span className="bg-accent-50 rounded px-1.5 py-0.5 text-accent-700">Highlighted col</span> Today</span>
+          </div>
         </div>
       )}
     </div>

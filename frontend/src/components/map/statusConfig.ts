@@ -7,13 +7,13 @@ export interface StatusConfig {
   label: string;
 }
 
-// Status → color / icon / human label (matches FEAT-004 spec)
+// Status → color / icon / human label — palette: #BCD979 #9DAD6F #C3DFE0 #7D6D61 #EF4444
 export const ROOM_STATUS_CONFIG: Record<RoomStatus, StatusConfig> = {
-  AVAILABLE: { color: '#10B981', icon: CheckCircle, label: 'Available' },
-  OCCUPIED: { color: '#EF4444', icon: XCircle, label: 'Occupied' },
-  MAINTENANCE: { color: '#F59E0B', icon: Wrench, label: 'Maintenance' },
-  RESERVED: { color: '#3B82F6', icon: Lock, label: 'Reserved' },
-  TEMP_UNAVAILABLE: { color: '#EAB308', icon: Clock, label: 'Temp Unavailable' },
+  AVAILABLE:       { color: '#9DAD6F', icon: CheckCircle, label: 'Available' },       // olive green
+  OCCUPIED:        { color: '#EF4444', icon: XCircle,     label: 'Occupied' },        // red (semantic)
+  MAINTENANCE:     { color: '#F59E0B', icon: Wrench,      label: 'Maintenance' },     // amber (semantic)
+  RESERVED:        { color: '#7D6D61', icon: Lock,        label: 'Reserved' },        // warm taupe
+  TEMP_UNAVAILABLE:{ color: '#C3DFE0', icon: Clock,       label: 'Temp Unavailable' },// powder teal
 };
 
 // Canonical order used by the legend and marker filters

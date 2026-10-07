@@ -74,15 +74,16 @@ export function Sidebar({ collapsed, onToggle, role }: SidebarProps) {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex flex-col bg-primary-900 text-white transition-all duration-200 ${
+      className={`fixed inset-y-0 left-0 z-40 flex flex-col transition-all duration-200 ${
         collapsed ? 'w-[60px]' : 'w-60'
       }`}
+      style={{ backgroundColor: '#5E574D' }}
       aria-label="Primary navigation"
     >
-      <div className="flex items-center justify-between h-16 px-3 border-b border-primary-800">
+      <div className="flex items-center justify-between h-16 px-3 border-b" style={{ borderColor: '#7D6D61' }}>
         {!collapsed && (
-          <span className="flex items-center gap-2 font-bold text-lg">
-            <GraduationCap size={22} className="text-accent-400" />
+          <span className="flex items-center gap-2 font-bold text-lg text-white">
+            <GraduationCap size={22} style={{ color: '#C3DFE0' }} />
             CAMPUS-X
           </span>
         )}
@@ -90,7 +91,7 @@ export function Sidebar({ collapsed, onToggle, role }: SidebarProps) {
           type="button"
           onClick={onToggle}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="p-1.5 rounded hover:bg-primary-800"
+          className="p-1.5 rounded text-white hover:bg-white/10"
         >
           {collapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
         </button>
@@ -99,7 +100,7 @@ export function Sidebar({ collapsed, onToggle, role }: SidebarProps) {
         {sections.map((section) => (
           <div key={section} className="mb-2">
             {!collapsed && (
-              <p className="px-4 pt-3 pb-1 text-xs uppercase tracking-wide text-primary-300">
+              <p className="px-4 pt-3 pb-1 text-xs uppercase tracking-wide" style={{ color: '#C3DFE0', opacity: 0.75 }}>
                 {section}
               </p>
             )}
@@ -113,10 +114,14 @@ export function Sidebar({ collapsed, onToggle, role }: SidebarProps) {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
                       isActive
-                        ? 'bg-primary-700 text-white border-l-4 border-accent-400'
-                        : 'text-primary-100 hover:bg-primary-800'
+                        ? 'text-white border-l-4'
+                        : 'text-white/75 hover:text-white hover:bg-white/10'
                     } ${collapsed ? 'justify-center px-2' : ''}`
                   }
+                  style={({ isActive }) => isActive ? {
+                    backgroundColor: '#7D6D61',
+                    borderLeftColor: '#C3DFE0',
+                  } : {}}
                 >
                   <item.icon size={18} />
                   {!collapsed && <span>{item.label}</span>}

@@ -167,5 +167,10 @@ export async function getComplaintStats(_req: Request, res: Response): Promise<v
     }),
   ]);
 
-  sendSuccess(res, { byStatus, byCategory, byBuilding });
+  // Reshape to plain numbers so frontend can render directly
+  sendSuccess(res, {
+    byStatus:   byStatus.map((r)   => ({ status:     r.status,     count: r._count._all })),
+    byCategory: byCategory.map((r) => ({ category:   r.category,   count: r._count._all })),
+    byBuilding: byBuilding.map((r) => ({ buildingId: r.buildingId, count: r._count._all })),
+  });
 }

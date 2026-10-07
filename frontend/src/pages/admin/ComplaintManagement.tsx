@@ -55,9 +55,9 @@ export default function ComplaintManagement() {
     },
   });
 
-  const stats = useQuery<{ byStatus: { status: ComplaintStatus; _count: number }[] }>({
+  const stats = useQuery<{ byStatus: { status: ComplaintStatus; count: number }[] }>({
     queryKey: ['complaint-stats'],
-    queryFn: async () => { const res = await client.get('/complaints/stats'); return (res.data?.data ?? res.data) as { byStatus: { status: ComplaintStatus; _count: number }[] }; },
+    queryFn: async () => { const res = await client.get('/complaints/stats'); return (res.data?.data ?? res.data) as { byStatus: { status: ComplaintStatus; count: number }[] }; },
   });
 
   const filtered = useMemo(() => {
@@ -70,7 +70,7 @@ export default function ComplaintManagement() {
 
   const statusCounts = useMemo(() => {
     const m: Record<string, number> = {};
-    (stats.data?.byStatus ?? []).forEach((s) => { m[s.status] = s._count; });
+    (stats.data?.byStatus ?? []).forEach((s) => { m[s.status] = s.count; });
     return m;
   }, [stats.data]);
 

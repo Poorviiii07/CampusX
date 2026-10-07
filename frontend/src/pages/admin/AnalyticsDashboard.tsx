@@ -13,7 +13,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import type { EnergyRecord } from '@/types';
 
 const REFRESH = 30 * 1000;
-const PIE_COLORS = ['#1D4ED8', '#14B8A6', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6', '#10B981', '#EAB308'];
+const PIE_COLORS = ['#9DAD6F', '#C3DFE0', '#7D6D61', '#BCD979', '#5E574D', '#A8CBCC', '#6B763F', '#3D3530'];
 
 interface Overview {
   rooms: number; availableRooms: number; activeComplaints: number;
@@ -68,10 +68,10 @@ export default function AnalyticsDashboard() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard icon={<DoorOpen size={18} />} label="Total Rooms" value={ov?.rooms} loading={overview.isLoading} color="#1D4ED8" />
-        <StatCard icon={<CheckCircle2 size={18} />} label="Available Now" value={ov?.availableRooms} loading={overview.isLoading} color="#10B981" />
+        <StatCard icon={<DoorOpen size={18} />} label="Total Rooms" value={ov?.rooms} loading={overview.isLoading} color="#7D6D61" />
+        <StatCard icon={<CheckCircle2 size={18} />} label="Available Now" value={ov?.availableRooms} loading={overview.isLoading} color="#9DAD6F" />
         <StatCard icon={<MessageSquareWarning size={18} />} label="Active Complaints" value={ov?.activeComplaints} loading={overview.isLoading} color="#EF4444" />
-        <StatCard icon={<CalendarDays size={18} />} label="Today's Classes" value={ov?.todayClasses} loading={overview.isLoading} color="#14B8A6"
+        <StatCard icon={<CalendarDays size={18} />} label="Today's Classes" value={ov?.todayClasses} loading={overview.isLoading} color="#C3DFE0"
           badge={ov ? `${ov.utilizationPercent}% util` : undefined} />
       </div>
 
@@ -84,7 +84,7 @@ export default function AnalyticsDashboard() {
                 <XAxis dataKey="building" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} unit="%" />
                 <Tooltip />
-                <Bar dataKey="utilizationPct" name="Utilization %" fill="#1D4ED8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="utilizationPct" name="Utilization %" fill="#9DAD6F" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : <EmptyState title="No utilization data" />}
@@ -100,7 +100,7 @@ export default function AnalyticsDashboard() {
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="open" name="Open" stroke="#EF4444" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="resolved" name="Resolved" stroke="#10B981" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="resolved" name="Resolved" stroke="#9DAD6F" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           ) : <EmptyState title="No complaint data" />}

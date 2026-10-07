@@ -140,9 +140,28 @@ export default function TimetableManagement() {
                           <td key={period} className={`border border-gray-200 p-0 align-top ${entry ? '' : 'bg-gray-50/50'}`}>
                             {entry ? (
                               <div className={`h-full px-1.5 py-1 ${isConflict ? 'bg-danger-50' : ''}`} title={isConflict ? 'Part of a detected conflict' : undefined}>
-                                <p className="font-semibold text-gray-800">{(entry as TimetableEntry & { subject?: { code: string } }).subject?.code ?? '—'}</p>
-                                <p className="text-gray-500">{(entry as TimetableEntry & { faculty?: { name: string } }).faculty?.name ?? '—'}</p>
-                                <p className="text-primary-700">{(entry as TimetableEntry & { room?: { code: string } }).room?.code ?? '—'}</p>
+                                {(() => {
+                                  const subj = (entry as any).subject as { code?: string; name?: string } | undefined;
+                                  const fac  = (entry as any).faculty as { name?: string } | undefined;
+                                  const room = (entry as any).room   as { code?: string } | undefined;
+                                  const code = subj?.code ?? '—';
+                                  const isOE = code === 'OE';
+                                  const isPE = ['IDS','CNS','NDB','DM','BI','ST','ESE','AEP'].includes(code);
+                                  return (
+                                    <>
+                                      <div className="flex items-center gap-1 flex-wrap">
+                                        <p className={`font-semibold text-xs leading-tight ${isOE ? 'text-purple-700' : isPE ? 'text-accent-700' : 'text-gray-800'}`}>
+                                          {code}
+                                        </p>
+                                        {isOE && <span className="text-[9px] bg-purple-100 text-purple-600 rounded px-1">Elective</span>}
+                                        {isPE && <span className="text-[9px] bg-accent-100 text-accent-600 rounded px-1">PE</span>}
+                                      </div>
+                                      {subj?.name && <p className="text-[9px] text-gray-400 truncate leading-tight" title={subj.name}>{subj.name}</p>}
+                                      <p className="text-[10px] text-gray-500">{fac?.name?.split(' ').slice(-1)[0] ?? '—'}</p>
+                                      <p className="text-[10px] text-primary-700">{room?.code ?? '—'}</p>
+                                    </>
+                                  );
+                                })()}
                               </div>
                             ) : (
                               <button type="button" aria-label={`Add entry ${day} period ${period}`} onClick={() => setEntryModal({ day, period })} className="flex h-full w-full items-center justify-center px-1.5 py-2 text-gray-300 hover:bg-primary-50 hover:text-primary-600">

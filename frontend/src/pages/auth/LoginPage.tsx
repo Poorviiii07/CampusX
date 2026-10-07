@@ -73,14 +73,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 to-primary-700 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #5E574D 0%, #7D6D61 50%, #9DAD6F 100%)' }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-accent-500 text-white mb-4">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl text-white mb-4" style={{ backgroundColor: '#9DAD6F' }}>
             <GraduationCap size={32} />
           </div>
           <h1 className="text-3xl font-bold text-white">CAMPUS-X</h1>
-          <p className="text-primary-200 mt-1">AI-Powered Smart Campus Management</p>
+          <p className="mt-1" style={{ color: '#C3DFE0' }}>AI-Powered Smart Campus Management</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-xl p-6">
